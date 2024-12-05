@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
             text: `Mã OTP của bạn là: ${otp}. OTP sẽ hết hạn sau 1 phút.`
         };
 
-        transporter.sendMail(mailOptions, (error, info) => {
+        await transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error(error);
                 return res.status(501).json({status:501, message: 'Không thể gửi email OTP.' });
