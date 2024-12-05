@@ -14,8 +14,8 @@ var indexRouter = require('./routes/index');
 var registerRouter = require('./routes/register');
 
 app.set('port', port);
-app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
+app.set('view engine', 'ejs');
 
 
 
