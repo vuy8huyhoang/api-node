@@ -131,7 +131,6 @@ router.post('/', async (req, res) => {
         </head>
         <body>
             <div class="email-container">
-            <img src="/logo-aitech.png" alt="logo"/>
                 <div class="email-header">
                     <h1>Chào mừng bạn!</h1>
                 </div>
