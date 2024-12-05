@@ -14,8 +14,7 @@ var indexRouter = require('./routes/index');
 var registerRouter = require('./routes/register');
 
 app.set('port', port);
-app.set('views', path.join(__dirname, 'views')); 
-app.set('view engine', 'ejs');
+
 
 
 
@@ -41,10 +40,6 @@ app.use('/register', registerRouter);
 app.use(function (req, res, next) {
     next(createError(404));
 });
-app.use((err, req, res, next) => {
-    res.status(500).render('error', { error: err });
-});
-
 
 app.use(function (err, req, res, next) {
     res.locals.message = err.message;
