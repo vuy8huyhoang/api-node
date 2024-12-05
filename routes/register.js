@@ -142,7 +142,7 @@ router.post('/', async (req, res) => {
                 </div>
                  <div class="email-footer">
                     <p>Bạn nhận được email này vì đã sử dụng địa chỉ email để đăng ký tài khoản trên hệ thống của chúng tôi.</p>
-                    <p>Nếu bạn gặp vấn đề, vui lòng liên hệ với chúng tôi qua số điện thoại: <strong><a href="tel:+842829008316">0829008316</a></strong> hoặc qua email: <strong><a href="mailto:${process.env.EMAIL_USER}">${process.env.EMAIL_USER}</a></strong>.</p>
+                    <p>Nếu bạn gặp vấn đề, vui lòng liên hệ với chúng tôi qua số điện thoại: <strong><a href="tel:+8429008316">0829008316</a></strong> hoặc qua email: <strong><a href="mailto:${process.env.EMAIL_USER}">${process.env.EMAIL_USER}</a></strong>.</p>
                 </div>
             </div>
         </body>
