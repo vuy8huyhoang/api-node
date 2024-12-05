@@ -54,7 +54,7 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 server.listen(port, function () {
-    console.log(`Server đang chạy ở cổng  http:localhost:${port}`);
+    console.log(`Server đang chạy ở cổng  http://localhost:${port}`);
 });
 mongoose.connect(mongoURI)
     .then(() => {
