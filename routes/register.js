@@ -49,8 +49,83 @@ router.post('/', async (req, res) => {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'Mã OTP xác minh email',
-            text: `Mã OTP của bạn là: ${otp}. OTP sẽ hết hạn sau 1 phút.`,
+            html: `
+    <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f9;
+                }
+                .email-container {
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    border-radius: 8px;
+                    padding: 20px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                    text-align: center;
+                    padding-bottom: 20px;
+                }
+                .header h1 {
+                    color: #4CAF50;
+                }
+                .content {
+                    font-size: 16px;
+                    line-height: 1.5;
+                    color: #333333;
+                }
+                .otp {
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: #FF5722;
+                    background-color: #f7f7f7;
+                    padding: 10px;
+                    border-radius: 4px;
+                    margin: 20px 0;
+                    display: inline-block;
+                }
+                .footer {
+                    text-align: center;
+                    padding-top: 20px;
+                    font-size: 14px;
+                    color: #777777;
+                }
+                .footer a {
+                    color: #4CAF50;
+                    text-decoration: none;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <h1>Xác minh email của bạn</h1>
+                </div>
+                <div class="content">
+                    <p>Chào bạn,</p>
+                    <p>Cảm ơn bạn đã đăng ký tài khoản trên hệ thống của chúng tôi.</p>
+                    <p>Để hoàn tất quá trình đăng ký, vui lòng nhập mã OTP sau:</p>
+                    <div class="otp">${otp}</div>
+                    <p>Mã OTP sẽ hết hạn sau 1 phút, vui lòng sử dụng ngay.</p>
+                    <p>Trân trọng,</p>
+                    <p>Đội ngũ hỗ trợ của chúng tôi</p>
+                </div>
+                <div class="footer">
+                    <p>Bạn nhận được email này vì đã đăng ký tài khoản trên website của chúng tôi. Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
+                    <p><a href="#">Xem thêm chi tiết về chính sách bảo mật</a></p>
+                </div>
+            </div>
+        </body>
+    </html>
+    `,
         };
+
 
         await sendEmail(mailOptions);
 
