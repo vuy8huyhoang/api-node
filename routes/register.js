@@ -48,83 +48,108 @@ router.post('/', async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'Mã OTP xác minh email',
+            subject: 'Xác minh email - Mã OTP của bạn',
             html: `
     <html>
         <head>
             <style>
                 body {
-                    font-family: Arial, sans-serif;
                     margin: 0;
                     padding: 0;
-                    background-color: #f4f4f9;
+                    font-family: Arial, sans-serif;
+                    background-color: #f9f9f9;
+                    color: #333;
                 }
                 .email-container {
-                    width: 100%;
                     max-width: 600px;
-                    margin: 0 auto;
+                    margin: 20px auto;
                     background-color: #ffffff;
                     border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                }
+                .email-header {
+                    background-color: #4CAF50;
                     padding: 20px;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                }
-                .header {
                     text-align: center;
-                    padding-bottom: 20px;
+                    color: #ffffff;
                 }
-                .header h1 {
+                .email-header h1 {
+                    margin: 0;
+                    font-size: 24px;
+                }
+                .email-body {
+                    padding: 20px;
+                }
+                .email-body h2 {
+                    margin: 0 0 10px 0;
+                    font-size: 20px;
                     color: #4CAF50;
                 }
-                .content {
-                    font-size: 16px;
-                    line-height: 1.5;
-                    color: #333333;
+                .email-body p {
+                    margin: 10px 0;
+                    line-height: 1.6;
                 }
-                .otp {
+                .otp-box {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    margin: 20px 0;
                     font-size: 24px;
                     font-weight: bold;
-                    color: #FF5722;
-                    background-color: #f7f7f7;
-                    padding: 10px;
-                    border-radius: 4px;
-                    margin: 20px 0;
-                    display: inline-block;
+                    color: #4CAF50;
+                    background-color: #f1f8e9;
+                    border: 1px dashed #4CAF50;
+                    border-radius: 5px;
+                    letter-spacing: 2px;
                 }
-                .footer {
+                .email-footer {
+                    background-color: #f1f1f1;
+                    padding: 15px;
                     text-align: center;
-                    padding-top: 20px;
                     font-size: 14px;
-                    color: #777777;
+                    color: #777;
                 }
-                .footer a {
+                .email-footer a {
                     color: #4CAF50;
                     text-decoration: none;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    margin-top: 20px;
+                    font-size: 16px;
+                    color: #ffffff;
+                    background-color: #4CAF50;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    transition: background-color 0.3s ease;
+                }
+                .button:hover {
+                    background-color: #43a047;
                 }
             </style>
         </head>
         <body>
             <div class="email-container">
-                <div class="header">
-                    <h1>Xác minh email của bạn</h1>
+                <div class="email-header">
+                    <h1>Chào mừng bạn!</h1>
                 </div>
-                <div class="content">
-                    <p>Chào bạn,</p>
-                    <p>Cảm ơn bạn đã đăng ký tài khoản trên hệ thống của chúng tôi.</p>
-                    <p>Để hoàn tất quá trình đăng ký, vui lòng nhập mã OTP sau:</p>
-                    <div class="otp">${otp}</div>
-                    <p>Mã OTP sẽ hết hạn sau 1 phút, vui lòng sử dụng ngay.</p>
-                    <p>Trân trọng,</p>
-                    <p>Đội ngũ hỗ trợ của chúng tôi</p>
+                <div class="email-body">
+                    <h2>Xác minh email của bạn</h2>
+                    <p>Cảm ơn bạn đã đăng ký tài khoản trên hệ thống của chúng tôi. Để hoàn tất việc đăng ký, vui lòng nhập mã OTP dưới đây:</p>
+                    <div class="otp-box">${otp}</div>
+                    <p><strong>Lưu ý:</strong> Mã OTP này sẽ hết hạn sau 1 phút. Nếu bạn không yêu cầu mã này, hãy bỏ qua email.</p>
                 </div>
-                <div class="footer">
-                    <p>Bạn nhận được email này vì đã đăng ký tài khoản trên website của chúng tôi. Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
-                    <p><a href="#">Xem thêm chi tiết về chính sách bảo mật</a></p>
+                 <div class="email-footer">
+                    <p>Bạn nhận được email này vì đã sử dụng địa chỉ email để đăng ký tài khoản trên hệ thống của chúng tôi.</p>
+                    <p>Nếu bạn gặp vấn đề, vui lòng liên hệ với chúng tôi qua số điện thoại: <strong><a href="tel:+842829008316">0829008316</a></strong> hoặc qua email: <strong><a href="mailto:${process.env.EMAIL_USER}">${process.env.EMAIL_USER}</a></strong>.</p>
                 </div>
             </div>
         </body>
     </html>
     `,
         };
+
 
 
         await sendEmail(mailOptions);
