@@ -13,7 +13,7 @@ const cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var registerRouter = require('./routes/register');
-
+var verifyRouter=require('./routes/verify')
 
 app.use(cors({
     origin: '*', // Cho phép tất cả các miền (có thể thay đổi cho phù hợp)
@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/register', registerRouter);
+app.use('/verify', verifyRouter);
 
 
 app.use(function (req, res, next) {

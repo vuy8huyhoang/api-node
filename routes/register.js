@@ -4,7 +4,6 @@ var bcrypt = require('bcryptjs');
 var User = require('../models/user');
 var transporter = require('../utils/mailer');
 
-// Hàm tạo mã OTP 6 chữ số
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000);
 }
@@ -152,7 +151,15 @@ router.post('/', async (req, res) => {
 
 
 
-        await sendEmail(mailOptions);
+        try {
+            await sendEmail(mailOptions); 
+        } catch (emailError) {
+            console.error('Lỗi khi gửi email:', emailError);
+            return res.status(500).json({
+                status: 500,
+                message: 'Không thể gửi email xác minh. Vui lòng kiểm tra lại địa chỉ email và thử lại!',
+            });
+        }
 
         res.status(201).json({
             status: 201,
