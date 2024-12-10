@@ -8,6 +8,7 @@ var port = process.env.PORT || 4000;
 var server = http.createServer(app);
 const mongoose = require('mongoose');
 const mongoURI = process.env.DB_URL;
+const cors = require('cors');
 
 
 var indexRouter = require('./routes/index');
@@ -21,12 +22,11 @@ app.set('views', path.join(__dirname, 'views'));
 
 
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-});
+app.use(cors({
+    origin: '*', // Cho phép tất cả các miền (có thể thay đổi cho phù hợp)
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Các phương thức cho phép
+    allowedHeaders: ['Content-Type', 'Authorization'], // Các headers cho phép
+}));
 
 
 
