@@ -14,19 +14,19 @@ const cors = require('cors');
 var indexRouter = require('./routes/index');
 var registerRouter = require('./routes/register');
 
-app.set('port', port);
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-
-
-
 
 app.use(cors({
     origin: '*', // Cho phép tất cả các miền (có thể thay đổi cho phù hợp)
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Các phương thức cho phép
     allowedHeaders: ['Content-Type', 'Authorization'], // Các headers cho phép
 }));
+
+app.set('port', port);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+
+
 
 
 
