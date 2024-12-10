@@ -6,7 +6,7 @@ var crypto = require('crypto');
 
 
 // Route để xác minh email
-router.post('/verify', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { email, otp } = req.body;
 
