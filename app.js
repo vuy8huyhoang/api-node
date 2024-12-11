@@ -13,8 +13,10 @@ const cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var registerRouter = require('./routes/register');
-var verifyRouter=require('./routes/verify')
-var resendRouter = require('./routes/resend-verify')
+var verifyRouter = require('./routes/verify');
+var resendRouter = require('./routes/resend-verify');
+var loginRouter = require('./routes/login');
+var refreshRouter = require('./routes/refresh');
 
 
 
@@ -42,6 +44,10 @@ app.use('/', indexRouter);
 app.use('/register', registerRouter);
 app.use('/verify', verifyRouter);
 app.use('/resend-verify', resendRouter);
+app.use('/login', loginRouter);
+app.use('/refresh', refreshRouter);
+
+
 
 app.use(function (req, res, next) {
     next(createError(404));
