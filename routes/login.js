@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
 
         const isMatch = await bcrypt.compare(mat_khau, user.mat_khau);
         if (!isMatch) {
-            return res.status(400).json({ status: 400, message: 'Mật khẩu không chính xác!' });
+            return res.status(401).json({ status: 401, message: 'Mật khẩu không chính xác!' });
         }
 
         if (!user.xac_minh) {
