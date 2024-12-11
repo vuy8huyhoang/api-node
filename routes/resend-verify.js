@@ -1,12 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var bcrypt = require('bcryptjs');
 var User = require('../models/user');
 var transporter = require('../utils/mailer');
+var crypto = require('crypto');
 
-function generateOTP() {
-    return Math.floor(100000 + Math.random() * 900000);
-}
+// Hàm gửi email
 const sendEmail = async (mailOptions) => {
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
@@ -17,33 +15,35 @@ const sendEmail = async (mailOptions) => {
         });
     });
 };
-
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000);
+}
+// Route để xác minh email
 router.post('/', async (req, res) => {
     try {
-        const { email, mat_khau } = req.body;
+        const { email } = req.body;
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ status: 400, message: 'Email đã tồn tại!' });
+        // Kiểm tra xem email có tồn tại không
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ status: 404, message: 'Không tìm thấy email!' });
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(mat_khau, salt);
+        // Kiểm tra xem người dùng đã xác minh chưa
+        if (user.xac_minh) {
+            return res.status(400).json({ status: 400, message: 'Tài khoản đã được xác minh!' });
+        }
 
-        const otp = generateOTP();
+        // Tạo mã OTP mới và thời gian hết hạn
+        const otp = generateOTP(); // Tạo mã OTP ngẫu nhiên (6 ký tự)
         const otpExpiration = new Date(Date.now() + 5 * 60 * 1000); 
 
-        const newUser = new User({
-            email,
-            mat_khau: hashedPassword,
-            role: 0,
-            xac_minh: false,
-            otp,
-            otp_expiration: otpExpiration,
-        });
+        // Cập nhật mã OTP và thời gian hết hạn vào cơ sở dữ liệu
+        user.otp = otp;
+        user.otp_expiration = otpExpiration;
+        await user.save();
 
-        await newUser.save();
-
+        // Gửi mã OTP qua email cho người dùng
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -149,28 +149,14 @@ router.post('/', async (req, res) => {
     `,
         };
 
+        // Gửi email và xử lý kết quả
+        await sendEmail(mailOptions);
+        return res.status(200).json({ status: 200, message: 'Mã OTP đã được gửi lại qua email!' });
 
-
-        try {
-            await sendEmail(mailOptions); 
-        } catch (emailError) {
-            console.error('Lỗi khi gửi email:', emailError);
-            return res.status(500).json({
-                status: 500,
-                message: 'Không thể gửi email xác minh. Vui lòng kiểm tra lại địa chỉ email và thử lại!',
-            });
-        }
-
-        res.status(201).json({
-            status: 201,
-            message: 'Đăng ký thành công! Mã OTP đã được gửi đến email của bạn.',
-            user: { email: newUser.email, role: newUser.role, xac_minh: newUser.xac_minh },
-        });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ status: 500, message: 'Có lỗi xảy ra. Vui lòng thử lại!' });
+        return res.status(500).json({ status: 500, message: 'Có lỗi xảy ra. Vui lòng thử lại!' });
     }
-
 });
 
 module.exports = router;
