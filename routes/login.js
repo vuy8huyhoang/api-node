@@ -5,7 +5,7 @@ var User = require('../models/user');
 var transporter = require('../utils/mailer');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-// Hàm tạo token ngẫu nhiên
+
 const generateToken = () => {
     return crypto.randomBytes(64).toString('hex');
 };
@@ -15,6 +15,16 @@ const generateTokens = (userId) => {
     const refreshToken = jwt.sign({ userId }, generateToken(), { expiresIn: '30d' }); // expires in 30 days
 
     return { accessToken, refreshToken };
+};
+const sendEmail = async (mailOptions) => {
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(info);
+        });
+    });
 };
 
 
@@ -33,7 +43,18 @@ router.post('/', async (req, res) => {
         }
 
         if (!user.xac_minh) {
-            return res.status(403).json({ status: 403, message: 'Vui lòng xác minh email của bạn trước khi đăng nhập!' });
+            try {
+                if (!mailOptions) {
+                    console.error("mailOptions is undefined!"); // Ghi log lỗi
+                    return res.status(500).json({ status: 500, message: 'Lỗi hệ thống. Vui lòng thử lại sau!' });
+                }
+
+                await sendEmail(mailOptions);
+                return res.status(403).json({ status: 403, message: 'Vui lòng xác minh email của bạn trước khi đăng nhập!' });
+            } catch (error) {
+                console.error("Error sending email:", error); // Ghi log lỗi chi tiết
+                return res.status(500).json({ status: 500, message: 'Lỗi gửi email xác minh. Vui lòng thử lại sau!' });
+            }
         }
 
         const { accessToken, refreshToken } = generateTokens(user._id);
