@@ -31,10 +31,9 @@ router.get('/google/callback',
         res.redirect('/');
     }
 );
-router.get('/logout', (req, res, next) => {
-    passport2.logout((err) => {
+router.get('/logout', (req, res) => {
+    req.logout(function (err) { 
         if (err) { return next(err); }
-        req.flash('success', 'Bạn đã đăng xuất thành công!');
         res.redirect('/');
     });
 });
