@@ -33,21 +33,21 @@ passport.use(new GoogleStrategy({
         if (!existingUser) {
             // Tạo mới user nếu chưa tồn tại
             const newUser = new User({
-                googleId: profile.id,
-                name: profile.displayName,
+                google_id: profile.id,
+                ten: profile.displayName,
                 email: profile.emails[0].value,
-                image: profile.photos[0].value,
+                hinh: profile.photos[0].value,
                 // Các trường khác tùy theo model của bạn
             });
             await newUser.save();
             return done(null, newUser);
         } else {
             // Nếu user đã tồn tại, kiểm tra xem đã liên kết với Google chưa
-            if (!existingUser.googleId) {
+            if (!existingUser.google_id) {
                 // Cập nhật thông tin Google cho user
-                existingUser.googleId = profile.id;
-                existingUser.name = profile.displayName;
-                existingUser.image = profile.photos[0].value;
+                existingUser.google_id = profile.id;
+                existingUser.ten = profile.displayName;
+                existingUser.hinh = profile.photos[0].value;
                 await existingUser.save();
             } else {
                 // Nếu user đã liên kết với Google, thông báo lỗi
