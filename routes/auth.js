@@ -32,9 +32,13 @@ router.get('/google/callback',
     }
 );
 router.get('/logout', (req, res) => {
-    req.logout(function (err) { 
+    req.logout(function (err) {
         if (err) { return next(err); }
-        res.redirect('/');
+        req.session.destroy(function (err) {
+            if (err) { return next(err); }
+            req.flash('success', 'Bạn đã đăng xuất thành công!');
+            res.redirect('/');
+        });
     });
 });
 
