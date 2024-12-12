@@ -11,8 +11,7 @@ const userSchema = new mongoose.Schema({
         unique: true 
     },
     mat_khau: {
-        type: String,
-        required: true  
+        type: String
     },
     hinh: {
         type: String,

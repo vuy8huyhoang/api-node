@@ -17,6 +17,7 @@ var verifyRouter = require('./routes/verify');
 var resendRouter = require('./routes/resend-verify');
 var loginRouter = require('./routes/login');
 var refreshRouter = require('./routes/refresh');
+var authRouter = require('./routes/auth');
 
 
 
@@ -46,7 +47,7 @@ app.use('/verify', verifyRouter);
 app.use('/resend-verify', resendRouter);
 app.use('/login', loginRouter);
 app.use('/refresh', refreshRouter);
-
+app.use('/auth', authRouter);
 
 
 app.use(function (req, res, next) {
