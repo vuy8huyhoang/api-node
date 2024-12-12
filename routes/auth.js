@@ -33,9 +33,17 @@ router.get('/google/callback',
 );
 router.get('/logout', (req, res) => {
     req.logout(function (err) {
-        if (err) { return next(err); }
+        if (err) {
+            return next(err);
+        }
+
+        // Xóa session và cookie
         req.session.destroy(function (err) {
-            if (err) { return next(err); }
+            if (err) {
+                return next(err);
+            }
+
+            res.clearCookie('connect.sid'); 
             res.redirect('/');
         });
     });
