@@ -26,7 +26,9 @@ const sendEmail = async (mailOptions) => {
         });
     });
 };
-
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000);
+}
 
 router.post('/', async (req, res) => {
     try {
@@ -41,6 +43,13 @@ router.post('/', async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ status: 401, message: 'Mật khẩu không chính xác!' });
         }
+        const otp = generateOTP(); // Tạo mã OTP ngẫu nhiên (6 ký tự)
+        const otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
+
+        // Cập nhật mã OTP và thời gian hết hạn vào cơ sở dữ liệu
+        user.otp = otp;
+        user.otp_expiration = otpExpiration;
+        await user.save();
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
