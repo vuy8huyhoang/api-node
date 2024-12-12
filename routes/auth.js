@@ -36,7 +36,6 @@ router.get('/logout', (req, res) => {
         if (err) { return next(err); }
         req.session.destroy(function (err) {
             if (err) { return next(err); }
-            req.flash('success', 'Bạn đã đăng xuất thành công!');
             res.redirect('/');
         });
     });
