@@ -38,6 +38,7 @@ passport.use(new GoogleStrategy({
                 ten: profile.displayName,
                 email: profile.emails[0].value,  // Lấy email từ profile
                 hinh: profile.photos[0].value,  // Lấy hình ảnh từ profile
+                xac_minh:true
             });
 
             // Lưu thông tin người dùng mới vào cơ sở dữ liệu
