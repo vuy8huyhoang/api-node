@@ -32,7 +32,7 @@ router.get('/google/callback',
     }
 );
 router.get('/logout', (req, res, next) => {
-    passport.logout((err) => {
+    passport2.logout((err) => {
         if (err) { return next(err); }
         req.flash('success', 'Bạn đã đăng xuất thành công!');
         res.redirect('/');
