@@ -31,6 +31,12 @@ router.get('/google/callback',
         res.redirect('/');
     }
 );
-
+router.get('/logout', (req, res, next) => {
+    passport.logout((err) => {
+        if (err) { return next(err); }
+        req.flash('success', 'Bạn đã đăng xuất thành công!');
+        res.redirect('/');
+    });
+});
 
 module.exports = router;

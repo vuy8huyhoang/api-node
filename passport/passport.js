@@ -18,38 +18,47 @@ passport.deserializeUser(async function (id, done) {
 });
 
 const clientid = process.env.GOOGLE_CLIENT_ID;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const clientsecret = process.env.GOOGLE_CLIENT_SECRET;
 const callback = process.env.GOOGLE_CALLBACK_URL;
 
 passport.use(new GoogleStrategy({
-    clientID: clientid, 
-    clientSecret: clientSecret, 
+    clientID: clientid,
+    clientSecret: clientsecret,
     callbackURL: callback,
     scope: ['profile', 'email'],
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        // Tìm user dựa trên Google ID
-        let user = await User.findOne({ googleId: profile.id });
+        const existingUser = await User.findOne({ email: profile.emails[0].value });
 
-        if (!user) {
-            // Nếu không tìm thấy user, tạo mới user
-            user = new User({
-                google_id: profile.id,
-                ten: profile.displayName,
-                email: profile.emails[0].value,  // Lấy email từ profile
-                hinh: profile.photos[0].value,  // Lấy hình ảnh từ profile
-                xac_minh:true
+        if (!existingUser) {
+            // Tạo mới user nếu chưa tồn tại
+            const newUser = new User({
+                googleId: profile.id,
+                name: profile.displayName,
+                email: profile.emails[0].value,
+                image: profile.photos[0].value,
+                // Các trường khác tùy theo model của bạn
             });
-
-            // Lưu thông tin người dùng mới vào cơ sở dữ liệu
-            await user.save();
+            await newUser.save();
+            return done(null, newUser);
+        } else {
+            // Nếu user đã tồn tại, kiểm tra xem đã liên kết với Google chưa
+            if (!existingUser.googleId) {
+                // Cập nhật thông tin Google cho user
+                existingUser.googleId = profile.id;
+                existingUser.name = profile.displayName;
+                existingUser.image = profile.photos[0].value;
+                await existingUser.save();
+            } else {
+                // Nếu user đã liên kết với Google, thông báo lỗi
+                return done(null, false, { message: 'Email này đã được liên kết với một tài khoản Google khác' });
+            }
         }
 
-        // Gọi callback và trả về đối tượng người dùng
-        done(null, user);
+        return done(null, existingUser);
     } catch (err) {
-        // Nếu có lỗi, gọi callback với lỗi
-        done(err, null);
+        console.error('Lỗi khi xác thực bằng Google:', err);
+        return done(err);
     }
 }));
 
