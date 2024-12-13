@@ -82,6 +82,11 @@ router.get('/logout', (req, res, next) => {
             res.clearCookie('accessToken');
             res.clearCookie('refreshToken');
             res.clearCookie('connect.sid');  // Xóa cookie session mặc định của Express
+
+            const googleLogoutUrl = 'https://accounts.google.com/Logout';  // URL logout của Google
+            res.redirect(googleLogoutUrl);  
+
+            // Sau khi đăng xuất Google, redirect về trang chủ (hoặc trang khác)
             res.redirect('/'); 
         });
     });
