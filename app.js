@@ -25,6 +25,7 @@ app.use(cors({
     origin: '*', // Cho phép tất cả các miền (có thể thay đổi cho phù hợp)
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Các phương thức cho phép
     allowedHeaders: ['Content-Type', 'Authorization'], // Các headers cho phép
+    credentials: true,
 }));
 
 app.set('port', port);

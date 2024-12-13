@@ -5,6 +5,7 @@ var User = require('../models/user');
 var transporter = require('../utils/mailer');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const session = require('express-session');
 
 const generateToken = () => {
     return crypto.randomBytes(64).toString('hex');
@@ -29,6 +30,17 @@ const sendEmail = async (mailOptions) => {
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000);
 }
+
+router.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 30 * 60 * 1000
+    }
+}));
 
 router.post('/', async (req, res) => {
     try {
@@ -174,8 +186,16 @@ router.post('/', async (req, res) => {
         user.refreshToken = refreshToken;
         await user.save();
 
-        res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 60 * 1000 }); // 1 phút
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 ngày
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            maxAge: 60 * 1000,
+            secure: process.env.NODE_ENV === 'production'
+        }); // 1 phút
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            secure: process.env.NODE_ENV === 'production'
+        }); // 30 ngày
 
         res.status(200).json({ status:200,message: 'Đăng nhập thành công!' });
     } catch (err) {
