@@ -37,7 +37,7 @@ passport.use(new GoogleStrategy({
                 ten: profile.displayName,
                 email: profile.emails[0].value,
                 hinh: profile.photos[0].value,
-                // Các trường khác tùy theo model của bạn
+                xac_minh:true
             });
             await newUser.save();
             return done(null, newUser);
@@ -48,6 +48,7 @@ passport.use(new GoogleStrategy({
                 existingUser.google_id = profile.id;
                 existingUser.ten = profile.displayName;
                 existingUser.hinh = profile.photos[0].value;
+                existingUser.xac_minh= true
                 await existingUser.save();
             } else {
                 // Nếu user đã liên kết với Google, thông báo lỗi
