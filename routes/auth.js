@@ -57,7 +57,7 @@ router.get('/google/callback',
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 secure: process.env.NODE_ENV === 'production'
             });
-            
+            res.redirect('https://www.vuai.vn/')
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
