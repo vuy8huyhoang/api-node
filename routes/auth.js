@@ -38,7 +38,7 @@ router.get('/google',
 
 // Google callback URL sau khi đăng nhập thành công
 router.get('/google/callback',
-    passport.authenticate('google', { failureRedirect: 'https://www.vuai.vn/' }),
+    passport.authenticate('google', { failureRedirect: process.env.URL_WEB }),
     async (req, res) => {
         try {
             const user = req.user; 
@@ -57,7 +57,7 @@ router.get('/google/callback',
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 secure: process.env.NODE_ENV === 'production'
             });
-            res.redirect('https://www.vuai.vn/')
+            res.redirect(process.env.URL_WEB)
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
