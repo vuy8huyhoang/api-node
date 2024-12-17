@@ -38,7 +38,7 @@ router.get('/google',
 
 // Google callback URL sau khi đăng nhập thành công
 router.get('/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
+    passport.authenticate('google', { failureRedirect: 'https://www.vuai.vn/' }),
     async (req, res) => {
         try {
             const user = req.user; 
