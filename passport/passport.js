@@ -40,6 +40,7 @@ passport.use(new GoogleStrategy({
                 xac_minh:true
             });
             await newUser.save();
+            res.redirect('https://www.vuai.vn/')
             return done(null, newUser);
         } else {
             // Nếu user đã tồn tại, kiểm tra xem đã liên kết với Google chưa
@@ -50,6 +51,7 @@ passport.use(new GoogleStrategy({
                 existingUser.hinh = profile.photos[0].value;
                 existingUser.xac_minh= true
                 await existingUser.save();
+                res.redirect('https://www.vuai.vn/')
             } else {
                 // Nếu user đã liên kết với Google, thông báo lỗi
                 return done(null, false, { message: 'Email này đã được liên kết với một tài khoản Google khác' });
