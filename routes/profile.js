@@ -11,7 +11,7 @@ const authenticateToken = async (req, res, next) => {
     if (!token) {
         return res.status(401).json({ status: 401, message: 'Không có accessToken. Vui lòng đăng nhập lại.' });
     }
-
+    console.log(token);
     try {
         // Kiểm tra xem token có hợp lệ trong cơ sở dữ liệu không
         const user = await User.findOne({ accessToken: token });
