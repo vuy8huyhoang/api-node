@@ -186,7 +186,11 @@ router.post('/', async (req, res) => {
         user.refreshToken = refreshToken;
         await user.save();
 
-        res.setHeader('Authorization', `Bearer ${accessToken}`);
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            maxAge: 60 * 1000,
+            secure: process.env.NODE_ENV === 'production'
+        }); // 1 phút
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             maxAge: 30 * 24 * 60 * 60 * 1000,
