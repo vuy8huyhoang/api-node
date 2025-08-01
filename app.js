@@ -18,7 +18,6 @@ var resendRouter = require('./routes/resend-verify');
 var loginRouter = require('./routes/login');
 var refreshRouter = require('./routes/refresh');
 var authRouter = require('./routes/auth');
-var chatRouter = require('./routes/chat');
 var profileRouter=require('./routes/profile')
 
 
@@ -50,7 +49,6 @@ app.use('/resend-verify', resendRouter);
 app.use('/login', loginRouter);
 app.use('/refresh', refreshRouter);
 app.use('/auth', authRouter);
-app.use('/chat', chatRouter);
 app.use('/profile', profileRouter);
 
 
