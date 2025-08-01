@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/user');
-var transporter = require('../utils/mailer');
+var User = require('../../models/user');
+var transporter = require('../../utils/mailer');
 
 // Hàm gửi email
 const sendEmail = async (mailOptions) => {
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
 
         // Tạo mã OTP mới và thời gian hết hạn
         const otp = generateOTP(); // Tạo mã OTP ngẫu nhiên (6 ký tự)
-        const otpExpiration = new Date(Date.now() + 5 * 60 * 1000); 
+        const otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
 
         // Cập nhật mã OTP và thời gian hết hạn vào cơ sở dữ liệu
         user.otp = otp;

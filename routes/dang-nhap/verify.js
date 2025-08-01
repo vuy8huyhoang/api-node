@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/user');
-var transporter = require('../utils/mailer');
-var crypto = require('crypto'); 
+var User = require('../../models/user');
+var transporter = require('../../utils/mailer');
+var crypto = require('crypto');
 
 
 // Route để xác minh email

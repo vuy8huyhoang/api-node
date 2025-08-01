@@ -6,8 +6,8 @@ require('dotenv').config();
 const passport = require('passport');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-var passport2 = require('../passport/passport');
-var User = require('../models/user');
+var passport2 = require('../../passport/passport');
+var User = require('../../models/user');
 const generateToken = () => {
     return crypto.randomBytes(64).toString('hex');
 };
@@ -24,7 +24,8 @@ router.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 30 * 60 * 1000 }
+        maxAge: 30 * 60 * 1000
+    }
 }));
 router.use(passport2.initialize());
 router.use(passport2.session());
@@ -41,7 +42,7 @@ router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: process.env.URL_WEB }),
     async (req, res) => {
         try {
-            const user = req.user; 
+            const user = req.user;
             const { accessToken, refreshToken } = generateTokens(user._id);
             user.accessToken = accessToken;
             user.refreshToken = refreshToken;
@@ -84,10 +85,10 @@ router.get('/logout', (req, res, next) => {
             res.clearCookie('connect.sid');  // Xóa cookie session mặc định của Express
 
             const googleLogoutUrl = 'https://accounts.google.com/Logout';  // URL logout của Google
-            res.redirect(googleLogoutUrl);  
+            res.redirect(googleLogoutUrl);
 
             // Sau khi đăng xuất Google, redirect về trang chủ (hoặc trang khác)
-            res.redirect('/'); 
+            res.redirect('/');
         });
     });
 });

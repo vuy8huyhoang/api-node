@@ -12,13 +12,13 @@ const cors = require('cors');
 
 
 var indexRouter = require('./routes/index');
-var registerRouter = require('./routes/register');
-var verifyRouter = require('./routes/verify');
-var resendRouter = require('./routes/resend-verify');
-var loginRouter = require('./routes/login');
-var refreshRouter = require('./routes/refresh');
-var authRouter = require('./routes/auth');
-var profileRouter=require('./routes/profile')
+var registerRouter = require('./routes/dang-nhap/register');
+var verifyRouter = require('./routes/dang-nhap/verify');
+var resendRouter = require('./routes/dang-nhap/resend-verify');
+var loginRouter = require('./routes/dang-nhap/login');
+var refreshRouter = require('./routes/dang-nhap/refresh');
+var authRouter = require('./routes/dang-nhap/auth');
+var profileRouter = require('./routes/dang-nhap/profile')
 
 
 app.use(cors({

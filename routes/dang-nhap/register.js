@@ -1,22 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
-var User = require('../models/user');
-var transporter = require('../utils/mailer');
-const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
-const session = require('express-session');
+var User = require('../../models/user');
+var transporter = require('../../utils/mailer');
 
-const generateToken = () => {
-    return crypto.randomBytes(64).toString('hex');
-};
-
-const generateTokens = (userId) => {
-    const accessToken = jwt.sign({ userId }, generateToken(), { expiresIn: '1m' }); // expires in 1 minute
-    const refreshToken = jwt.sign({ userId }, generateToken(), { expiresIn: '30d' }); // expires in 30 days
-
-    return { accessToken, refreshToken };
-};
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000);
+}
 const sendEmail = async (mailOptions) => {
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
@@ -27,41 +17,33 @@ const sendEmail = async (mailOptions) => {
         });
     });
 };
-function generateOTP() {
-    return Math.floor(100000 + Math.random() * 900000);
-}
-
-router.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 30 * 60 * 1000
-    }
-}));
 
 router.post('/', async (req, res) => {
     try {
         const { email, mat_khau } = req.body;
 
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ status: 400, message: 'Người dùng không tồn tại!' });
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ status: 400, message: 'Email đã tồn tại!' });
         }
 
-        const isMatch = await bcrypt.compare(mat_khau, user.mat_khau);
-        if (!isMatch) {
-            return res.status(401).json({ status: 401, message: 'Mật khẩu không chính xác!' });
-        }
-        const otp = generateOTP(); // Tạo mã OTP ngẫu nhiên (6 ký tự)
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(mat_khau, salt);
+
+        const otp = generateOTP();
         const otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
 
-        // Cập nhật mã OTP và thời gian hết hạn vào cơ sở dữ liệu
-        user.otp = otp;
-        user.otp_expiration = otpExpiration;
-        await user.save();
+        const newUser = new User({
+            email,
+            mat_khau: hashedPassword,
+            role: 0,
+            xac_minh: false,
+            otp,
+            otp_expiration: otpExpiration,
+        });
+
+        await newUser.save();
+
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -166,43 +148,29 @@ router.post('/', async (req, res) => {
     </html>
     `,
         };
-        if (!user.xac_minh) {
-            try {
-                if (!mailOptions) {
-                    console.error("mailOptions is undefined!"); // Ghi log lỗi
-                    return res.status(500).json({ status: 500, message: 'Lỗi hệ thống. Vui lòng thử lại sau!' });
-                }
 
-                await sendEmail(mailOptions);
-                return res.status(403).json({ status: 403, message: 'Vui lòng xác minh email của bạn trước khi đăng nhập!' });
-            } catch (error) {
-                console.error("Error sending email:", error); // Ghi log lỗi chi tiết
-                return res.status(500).json({ status: 500, message: 'Lỗi gửi email xác minh. Vui lòng thử lại sau!' });
-            }
+
+
+        try {
+            await sendEmail(mailOptions);
+        } catch (emailError) {
+            console.error('Lỗi khi gửi email:', emailError);
+            return res.status(500).json({
+                status: 500,
+                message: 'Không thể gửi email xác minh. Vui lòng kiểm tra lại địa chỉ email và thử lại!',
+            });
         }
 
-        const { accessToken, refreshToken } = generateTokens(user._id);
-        user.accessToken = accessToken;
-        user.refreshToken = refreshToken;
-        await user.save();
-
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            maxAge: 60 * 1000,
-            secure: process.env.NODE_ENV === 'production'
-        }); // 1 phút
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            maxAge: 30 * 24 * 60 * 60 * 1000,
-            secure: process.env.NODE_ENV === 'production'
-        }); // 30 ngày
-
-        res.status(200).json({ status:200,message: 'Đăng nhập thành công!' });
+        res.status(201).json({
+            status: 201,
+            message: 'Đăng ký thành công! Mã OTP đã được gửi đến email của bạn.',
+            user: { email: newUser.email, role: newUser.role, xac_minh: newUser.xac_minh },
+        });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ status: 500, message: 'Có lỗi xảy ra, vui lòng thử lại!' });
+        res.status(500).json({ status: 500, message: 'Có lỗi xảy ra. Vui lòng thử lại!' });
     }
-});
 
+});
 
 module.exports = router;

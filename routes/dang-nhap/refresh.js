@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser');
-var User = require('../models/user');
+var User = require('../../models/user');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 

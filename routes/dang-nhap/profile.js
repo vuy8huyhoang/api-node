@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
-var User = require('../models/user'); // Giả sử bạn có model User
+var User = require('../../models/user'); // Giả sử bạn có model User
 const cookieParser = require('cookie-parser');
 router.use(cookieParser())
 // Middleware để xác thực accessToken
 const authenticateToken = async (req, res, next) => {
-    const token = req.cookies.accessToken; 
+    const token = req.cookies.accessToken;
 
     if (!token) {
         return res.status(401).json({ status: 401, message: 'Không có accessToken. Vui lòng đăng nhập lại.' });
@@ -45,10 +45,10 @@ router.post('/', authenticateToken, async (req, res) => {
             status: 200,
             message: 'Lấy thông tin thành công.',
             profile: {
-                id:user._id,
+                id: user._id,
                 ten: user.ten,
                 email: user.email,
-                hinh:user.hinh,
+                hinh: user.hinh,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt
             }
