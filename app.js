@@ -19,7 +19,8 @@ var loginRouter = require('./routes/dang-nhap/login');
 var refreshRouter = require('./routes/dang-nhap/refresh');
 var authRouter = require('./routes/dang-nhap/auth');
 var profileRouter = require('./routes/dang-nhap/profile')
-
+var propertiesRouter = require('./routes/properties'); 
+ 
 
 app.use(cors({
     origin: '*', // Cho phép tất cả các miền (có thể thay đổi cho phù hợp)
@@ -50,7 +51,7 @@ app.use('/login', loginRouter);
 app.use('/refresh', refreshRouter);
 app.use('/auth', authRouter);
 app.use('/profile', profileRouter);
-
+app.use('/api/properties', propertiesRouter);
 
 app.use(function (req, res, next) {
     next(createError(404));
