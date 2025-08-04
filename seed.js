@@ -2,10 +2,34 @@ const mongoose = require('mongoose');
 const Property = require('./models/property');
 require('dotenv').config();
 
-// Dữ liệu mẫu (sao chép từ file siteData.ts của frontend)
+// SỬA LỖI: Thêm các biến phụ trợ bị thiếu
+const genericAmenities = [
+    { name: 'Camera an ninh', iconName: 'Camera' },
+    { name: 'Cổng khóa vân tay', iconName: 'Lock' },
+    { name: 'Hệ thống PCCC', iconName: 'Heater' },
+    { name: 'Wifi', iconName: 'Wifi' },
+    { name: 'Thang máy', iconName: 'Building' },
+    { name: 'Sân phơi', iconName: 'Wind' },
+    { name: 'Tủ lạnh', iconName: 'Refrigerator' },
+    { name: 'Chỗ để xe', iconName: 'ParkingCircle' },
+];
+
+const genericGallery = [
+    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&h=600&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800&h=600&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=800&h=600&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=800&h=600&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1616046229478-9901c5536a45?q=80&w=800&h=600&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=800&h=600&auto=format&fit=crop',
+];
+
+const genericRoomDetails = (prefix, basePrice) => [
+    { id: `${prefix}-01`, size: '22 - 26 m²', capacity: 2, type: 'Phòng Studio', price: basePrice, imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=400&h=300&auto=format&fit=crop' },
+    { id: `${prefix}-02`, size: '25 - 28 m²', capacity: 2, type: 'Phòng Studio', price: basePrice + 150000, imageUrl: 'https://images.unsplash.com/photo-1560185893-a55de8537e49?q=80&w=400&h=300&auto=format&fit=crop' },
+    { id: `${prefix}-03`, size: '20 - 24 m²', capacity: 2, type: 'Phòng Studio', price: basePrice - 100000, imageUrl: 'https://images.unsplash.com/photo-1556702581-30c3c2423514?q=80&w=400&h=300&auto=format&fit=crop' },
+];
+
 const propertiesToSeed = [
-    // Dán toàn bộ mảng allProperties của bạn vào đây...
-    // Ví dụ:
     {
         id: 'HN-01', title: 'CCMN Huyện Hoài Đức', city: 'Hà Nội', district: 'Huyện Hoài Đức', address: '18 ngõ 43 đường Trại Gà, xã Di Trạch', price: 4300000, priceRange: '4.150.000đ - 4.650.000đ', availableRooms: 12, imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=400&h=300&auto=format&fit=crop',
         gallery: genericGallery, description: 'Tòa nhà mới gần ĐH Công Nghiệp, full nội thất.', amenities: genericAmenities, availableRoomDetails: genericRoomDetails('HN-01', 4300000)
@@ -101,22 +125,20 @@ const propertiesToSeed = [
     ...Array.from({ length: 6 }, (_, i) => ({
         id: `DN-${5 + i}`, title: `Căn hộ Mẫu Đà Nẵng ${5 + i}`, city: 'Đà Nẵng', district: ['Quận Liên Chiểu', 'Quận Cẩm Lệ'][i % 2], address: `Địa chỉ mẫu ${5 + i}, Đà Nẵng`, price: 2200000 + i * 300000, priceRange: 'Dưới 3 triệu', availableRooms: 7 + i, imageUrl: `https://images.unsplash.com/photo-1600585152225-3579fe9d7ae9?q=80&w=400&h=300&auto=format&fit=crop&ixid=${i}`,
         gallery: genericGallery, description: `Mô tả mẫu cho căn hộ ${5 + i}`, amenities: genericAmenities, availableRoomDetails: genericRoomDetails(`DN-${5 + i}`, 2200000 + i * 300000)
-    })), 
+    })),
 ];
 
 async function seedDB() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
+        await mongoose.connect(process.env.DB_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
         console.log('Đã kết nối đến MongoDB để nạp dữ liệu...');
 
-        // Xóa dữ liệu cũ
         await Property.deleteMany({});
         console.log('Đã xóa dữ liệu cũ.');
 
-        // Thêm dữ liệu mới
         await Property.insertMany(propertiesToSeed);
         console.log('Đã nạp dữ liệu mới thành công!');
 

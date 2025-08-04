@@ -19,7 +19,7 @@ var loginRouter = require('./routes/dang-nhap/login');
 var refreshRouter = require('./routes/dang-nhap/refresh');
 var authRouter = require('./routes/dang-nhap/auth');
 var profileRouter = require('./routes/dang-nhap/profile')
-var propertiesRouter = require('./routes/properties'); 
+var propertiesRouter = require('./routes/du-an/thue-tro/properties'); 
  
 
 app.use(cors({

@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Schema cho các tiện nghi con
 const AmenitySchema = new Schema({
     name: { type: String, required: true },
     iconName: { type: String, required: true },
 }, { _id: false });
 
-// Schema cho các phòng trống con
 const RoomSchema = new Schema({
     id: { type: String, required: true },
     size: String,
@@ -17,7 +15,6 @@ const RoomSchema = new Schema({
     imageUrl: String,
 }, { _id: false });
 
-// Schema chính cho một bất động sản
 const PropertySchema = new Schema({
     id: { type: String, required: true, unique: true, index: true },
     title: { type: String, required: true },
